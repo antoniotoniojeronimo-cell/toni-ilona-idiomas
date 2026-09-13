@@ -5,157 +5,244 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TONI ❤️ ILONA — Idiomas</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#fff7ed,#eef2ff);color:#172033}
-.app{max-width:820px;margin:auto;padding:22px}.card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 35px #0001;margin:14px 0}
-h1{margin:0 0 6px;font-size:30px}h2{margin:0 0 12px}.sub{color:#667085}.players{display:grid;grid-template-columns:1fr 1fr;gap:12px}.player{padding:16px;border-radius:18px;background:#f8fafc;border:2px solid transparent}.active{border-color:#7c3aed;background:#faf5ff}.score{font-size:34px;font-weight:800}.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;font-size:13px}.buttons{display:flex;flex-wrap:wrap;gap:10px}.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:700;cursor:pointer;background:#e5e7eb}.btn.primary{background:#7c3aed;color:white}.btn.good{background:#16a34a;color:white}.btn.bad{background:#dc2626;color:white}.btn:disabled{opacity:.45;cursor:not-allowed}.question{font-size:28px;font-weight:800;margin:18px 0}.answers{display:grid;gap:10px}.answer{text-align:left;font-size:18px}.hidden{display:none}.room{font-family:ui-monospace,monospace;font-size:28px;letter-spacing:4px}.small{font-size:13px;color:#667085}.status{font-weight:700}.ok{color:#15803d}.warn{color:#b45309}@media(max-width:600px){.players{grid-template-columns:1fr}.question{font-size:23px}}
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#17202a;background:#f4f7fb}
+*{box-sizing:border-box} body{margin:0;min-height:100vh}
+.wrap{max-width:720px;margin:auto;padding:20px}
+.card{background:white;border-radius:22px;padding:22px;box-shadow:0 8px 30px #0001;margin:14px 0}
+h1{font-size:28px;margin:0 0 6px} h2{margin:4px 0 12px}
+.sub{color:#667085}.row{display:flex;gap:10px;flex-wrap:wrap}
+button,input{font:inherit;border-radius:13px;padding:12px 14px;border:1px solid #ccd3dc}
+button{border:0;background:#202938;color:white;font-weight:700;cursor:pointer}
+button.secondary{background:#e9eef5;color:#17202a} button:disabled{opacity:.45;cursor:not-allowed}
+input{text-transform:uppercase;width:180px}
+.big{font-size:25px;font-weight:800;text-align:center;padding:18px;border-radius:18px;background:#f2f5f9;margin:15px 0}
+.answers{display:grid;gap:10px}.answers button{background:#fff;color:#17202a;border:2px solid #d8dee7;text-align:left}
+.answers button:hover{border-color:#667085}.score{display:flex;justify-content:space-between;font-weight:800}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;margin:3px}
+.ok{color:#087443;font-weight:800}.bad{color:#b42318;font-weight:800}.hidden{display:none}
+.small{font-size:13px;color:#667085}.setup{background:#fff7e6;border:1px solid #ffd591}
+code{word-break:break-all}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="wrap">
   <div class="card">
     <h1>🇪🇸🇬🇧 TONI ❤️ ILONA</h1>
-    <div class="sub">Dos personas, dos países, un juego de idiomas.</div>
+    <div class="sub">Juego de idiomas — España 🇪🇸 ↔ Letonia 🇱🇻</div>
   </div>
 
-  <div class="card" id="setup">
-    <h2>1. Conectaros</h2>
-    <p class="small">Una persona crea la sala y comparte el código. La otra lo introduce. No hace falta estar en el mismo lugar.</p>
-    <div class="buttons">
-      <button class="btn primary" onclick="createRoom()">Crear sala</button>
-      <button class="btn" onclick="showJoin()">Unirse a una sala</button>
-    </div>
-    <div id="joinBox" class="hidden" style="margin-top:15px">
-      <input id="roomInput" placeholder="Código de sala" style="padding:13px;border-radius:12px;border:1px solid #ccc;width:100%;font-size:18px;text-transform:uppercase">
-      <button class="btn primary" onclick="joinRoom()" style="margin-top:10px">Entrar</button>
-    </div>
-    <div id="roomInfo" class="hidden" style="margin-top:15px">
-      <div class="small">Comparte este código con la otra persona:</div>
-      <div class="room" id="roomCode"></div>
-    </div>
-    <div id="status" class="status">Desconectado</div>
+  <div id="setup" class="card setup">
+    <h2>⚙️ Falta conectar la base de datos</h2>
+    <p>Esta versión ya no usa PeerJS. Usa Firebase Realtime Database para sincronizar las dos pantallas en tiempo real.</p>
+    <p class="small">Si ves este mensaje, todavía hay que pegar la configuración de Firebase en este archivo. No es un fallo de GitHub Pages.</p>
   </div>
 
-  <div class="card hidden" id="identity">
-    <h2>2. ¿Quién eres?</h2>
-    <div class="buttons">
-      <button class="btn primary" onclick="choose('TONI')">TONI 🇪🇸→🇬🇧</button>
-      <button class="btn primary" onclick="choose('ILONA')">ILONA 🇱🇻→🇪🇸</button>
+  <div id="home" class="card">
+    <h2>🎮 Entrar a jugar</h2>
+    <p>Elige quién eres:</p>
+    <div class="row">
+      <button onclick="selectRole('TONI')">TONI 🇪🇸 → 🇬🇧</button>
+      <button onclick="selectRole('ILONA')">ILONA 🇱🇻 → 🇪🇸</button>
     </div>
+    <div id="roleInfo" class="sub" style="margin-top:12px"></div>
+    <hr style="border:0;border-top:1px solid #eee;margin:18px 0">
+    <h3>Crear sala</h3>
+    <button id="createBtn" onclick="createRoom()" disabled>Crear sala</button>
+    <div style="margin-top:16px">
+      <h3>Unirse a una sala</h3>
+      <div class="row">
+        <input id="roomInput" maxlength="6" placeholder="CÓDIGO">
+        <button id="joinBtn" onclick="joinRoom()" disabled>Unirse</button>
+      </div>
+    </div>
+    <p id="status" class="small"></p>
   </div>
 
-  <div class="card hidden" id="game">
-    <div class="players">
-      <div class="player" id="toniBox"><b>TONI 🇬🇧</b><div class="score" id="toniScore">0</div></div>
-      <div class="player" id="ilonaBox"><b>ILONA 🇪🇸</b><div class="score" id="ilonaScore">0</div></div>
+  <div id="game" class="card hidden">
+    <div class="score">
+      <span>TONI 🇬🇧 <span id="toniScore">0</span></span>
+      <span>ILONA 🇪🇸 <span id="ilonaScore">0</span></span>
     </div>
-    <p style="margin-bottom:4px">Turno:</p><div id="turn" class="pill"></div>
-    <div id="q" class="question"></div>
+    <div id="roomLabel" class="small" style="margin-top:8px"></div>
+    <div id="turnLabel" style="margin-top:15px;font-weight:800"></div>
+    <div id="question" class="big"></div>
     <div id="answers" class="answers"></div>
-    <p id="feedback" class="status"></p>
-    <button id="next" class="btn primary hidden" onclick="nextQuestion()">Siguiente ronda →</button>
+    <div id="feedback" style="margin-top:14px;min-height:24px"></div>
+    <div id="nextBox" class="hidden" style="margin-top:14px">
+      <button onclick="nextRound()">➡️ Siguiente</button>
+    </div>
+  </div>
+
+  <div id="wait" class="card hidden">
+    <h2>⏳ Esperando...</h2>
+    <p id="waitText"></p>
   </div>
 </div>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script>
-const questions=[
- {p:"TONI",q:"¿Qué significa “Hello”? 🇬🇧",a:["Adiós","Hola","Gracias"],c:1},
- {p:"ILONA",q:"🇪🇸 “Hola” nozīmē… 🇱🇻",a:["Ardievu","Paldies","Sveiki"],c:2},
- {p:"TONI",q:"¿Qué significa “Apple”? 🍎",a:["Casa","Manzana","Agua"],c:1},
- {p:"ILONA",q:"🇪🇸 “Manzana” ir… 🇱🇻",a:["Ābols","Ūdens","Māja"],c:0},
- {p:"TONI",q:"¿Qué significa “Bye”? 👋",a:["Hola","Adiós","Amor"],c:1},
- {p:"ILONA",q:"🇪🇸 “Gracias” ir… 🇱🇻",a:["Sveiki","Paldies","Ardievu"],c:1},
- {p:"TONI",q:"¿Qué significa “Water”? 💧",a:["Agua","Comida","Casa"],c:0},
- {p:"ILONA",q:"🇪🇸 “Agua” ir… 🇱🇻",a:["Ābols","Ūdens","Māja"],c:1},
- {p:"TONI",q:"¿Qué significa “Love”? ❤️",a:["Feliz","Amor","Amigo"],c:1},
- {p:"ILONA",q:"🇪🇸 “Amor” ir… 🇱🇻",a:["Mīlestība","Ūdens","Draugs"],c:0}
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+  getDatabase, ref, set, update, get, onValue
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+/* =========================================================
+   PEGA AQUÍ LA CONFIGURACIÓN QUE TE DA FIREBASE
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDpGK5V-myz-j9JA0OJAkU3jo6vqLC9tm8",
+  authDomain: "toni-ilona-idiomas.firebaseapp.com",
+  databaseURL: "https://toni-ilona-idiomas-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "toni-ilona-idiomas",
+  storageBucket: "toni-ilona-idiomas.firebasestorage.app",
+  messagingSenderId: "491346563702",
+  appId: "1:491346563702:web:c6821775efb0282198c557"
+};
+
+const configured = !Object.values(firebaseConfig).some(v => String(v).includes("PEGA_AQUI"));
+const setup = document.getElementById("setup");
+const createBtn = document.getElementById("createBtn");
+const joinBtn = document.getElementById("joinBtn");
+if(configured){ setup.classList.add("hidden"); createBtn.disabled=false; joinBtn.disabled=false; }
+
+let db=null, role=null, room=null, roomData=null, unsubscribe=null;
+
+const rounds = [
+ {role:"TONI", q:"Traduce al inglés: «Hola»", a:["Hello","Goodbye","Thanks"], correct:0},
+ {role:"ILONA", q:"Español: «Labdien!» significa…", a:["Hola / Buenos días","Adiós","Gracias"], correct:0},
+ {role:"TONI", q:"Traduce al inglés: «Gracias»", a:["Please","Thanks","Sorry"], correct:1},
+ {role:"ILONA", q:"Español: «Adiós» significa…", a:["Paldies","Sveiki","Uz redzēšanos"], correct:2},
+ {role:"TONI", q:"Traduce al inglés: «Sí»", a:["No","Yes","Maybe"], correct:1},
+ {role:"ILONA", q:"Español: «No» significa…", a:["Jā","Nē","Lūdzu"], correct:1},
+ {role:"TONI", q:"Traduce al inglés: «Tengo hambre»", a:["I am hungry","I am happy","I am tired"], correct:0},
+ {role:"ILONA", q:"Español: «Tengo sueño» significa…", a:["Man ir auksti","Man ir miegs / tengo sueño","Es esmu izsalcis"], correct:1},
+ {role:"TONI", q:"Traduce al inglés: «Te quiero»", a:["I love you","I like you","See you"], correct:0},
+ {role:"ILONA", q:"Español: «Te quiero» significa…", a:["Es tevi mīlu","Es nezinu","Uz redzēšanos"], correct:0},
+ {role:"TONI", q:"Traduce al inglés: «¿Cómo estás?»", a:["What is your name?","How are you?","Where are you?"], correct:1},
+ {role:"ILONA", q:"Español: «Me llamo Ilona» significa…", a:["Mani sauc Ilona","Es esmu no Spānijas","Man ir labi"], correct:0}
 ];
 
-let peer,conn,host=false,me=null,state={turn:0,score:{TONI:0,ILONA:0},idx:0,answered:false};
+function init(){
+  if(!configured) return;
+  try{
+    const app=initializeApp(firebaseConfig);
+    db=getDatabase(app);
+    setStatus("🟢 Firebase listo. Elige TONI o ILONA.");
+  }catch(e){ setStatus("❌ Error al iniciar Firebase: "+e.message); }
+}
+window.selectRole=function(r){
+  role=r;
+  document.getElementById("roleInfo").innerHTML =
+    r==="TONI" ? "TONI: vas a practicar <b>inglés</b>. 🇪🇸 → 🇬🇧" :
+    "ILONA: tu apoyo es el <b>letón</b> y vas a practicar español. 🇱🇻 → 🇪🇸";
+};
+function setStatus(t){document.getElementById("status").textContent=t}
 
-const $=id=>document.getElementById(id);
-function setStatus(t,cls=""){ $("status").textContent=t; $("status").className="status "+cls; }
-function createRoom(){
- host=true; peer=new Peer();
- peer.on('open',id=>{
-   const code=id.slice(-6).toUpperCase(); $("roomCode").textContent=code;
-   $("roomInfo").classList.remove("hidden"); setStatus("Esperando a la otra persona…","warn");
-   peer.on('connection',c=>{conn=c; wire(); showIdentity();});
- });
- peer.on('error',e=>setStatus("No se pudo crear la sala: "+e.type,"warn"));
+function code(){
+  return Math.random().toString(36).slice(2,8).toUpperCase();
 }
-function showJoin(){ $("joinBox").classList.remove("hidden"); }
-function joinRoom(){
- const code=$("roomInput").value.trim().toLowerCase();
- if(!code)return;
- // Peer IDs are not guaranteed to be the last 6 chars, so we use a small deterministic room peer ID.
- // The creator actually uses a room peer ID below.
+window.createRoom=async function(){
+  if(!db||!role) return setStatus("Primero elige TONI o ILONA.");
+  try{
+    const c=code();
+    const data={toni:null,ilona:null,round:0,toniScore:0,ilonaScore:0,answeredBy:null,answer:null,correct:null,finished:false};
+    data[role.toLowerCase()]="connected";
+    await set(ref(db,"rooms/"+c),data);
+    room=c;
+    listen();
+    showGame();
+    setStatus("Sala creada: "+c);
+  }catch(e){setStatus("❌ No se pudo crear la sala: "+e.message)}
+};
+
+window.joinRoom=async function(){
+  if(!db||!role) return setStatus("Primero elige TONI o ILONA.");
+  const c=document.getElementById("roomInput").value.trim().toUpperCase();
+  if(c.length!==6) return setStatus("El código debe tener 6 caracteres.");
+  try{
+    const snap=await get(ref(db,"rooms/"+c));
+    if(!snap.exists()) return setStatus("❌ No existe esa sala.");
+    const data=snap.val();
+    const key=role.toLowerCase();
+    if(data[key] && data[key]!=="connected") return setStatus("❌ Ese jugador ya está ocupado.");
+    await update(ref(db,"rooms/"+c),{[key]:"connected"});
+    room=c; listen(); showGame();
+  }catch(e){setStatus("❌ No se pudo entrar: "+e.message)}
+};
+
+function listen(){
+  if(unsubscribe) unsubscribe();
+  unsubscribe=onValue(ref(db,"rooms/"+room),snap=>{
+    if(!snap.exists()) return;
+    roomData=snap.val(); render();
+  },err=>setStatus("❌ Conexión perdida: "+err.message));
 }
-function createRoom(){
- host=true;
- const code=Math.random().toString(36).slice(2,8).toUpperCase();
- peer=new Peer("toni-ilona-"+code.toLowerCase());
- peer.on('open',()=>{ $("roomCode").textContent=code; $("roomInfo").classList.remove("hidden"); setStatus("Sala creada. Comparte el código.","ok");});
- peer.on('connection',c=>{conn=c;wire();showIdentity();});
- peer.on('error',e=>setStatus("Error de conexión: "+e.type,"warn"));
+
+function showGame(){
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  document.getElementById("roomLabel").textContent="Sala: "+room+" · Tú eres "+role;
 }
-function joinRoom(){
- const code=$("roomInput").value.trim().toLowerCase();
- if(!code)return;
- peer=new Peer();
- peer.on('open',()=>{conn=peer.connect("toni-ilona-"+code); wire(); conn.on('open',()=>{showIdentity(); send({type:"hello"});});});
- peer.on('error',e=>setStatus("No se encontró esa sala. Comprueba el código.","warn"));
-}
-function wire(){
- conn.on('open',()=>{setStatus("Conectados ❤️","ok"); showIdentity();});
- conn.on('data',msg=>handle(msg));
-}
-function send(x){if(conn&&conn.open)conn.send(x)}
-function showIdentity(){ $("identity").classList.remove("hidden"); }
-function choose(who){
- if(me)return;
- me=who; $("identity").classList.add("hidden"); $("game").classList.remove("hidden");
- send({type:"identity",who});
- render();
-}
-function handle(msg){
- if(msg.type==="identity"){ $("identity").classList.add("hidden"); $("game").classList.remove("hidden"); render();}
- if(msg.type==="state"){state=msg.state;render();}
- if(msg.type==="hello"){send({type:"state",state});}
-}
+
 function render(){
- const x=questions[state.idx%questions.length];
- $("toniScore").textContent=state.score.TONI;
- $("ilonaScore").textContent=state.score.ILONA;
- $("turn").textContent= x.p==="TONI" ? "TONI 🇪🇸 → 🇬🇧" : "ILONA 🇱🇻 → 🇪🇸";
- $("toniBox").classList.toggle("active",x.p==="TONI");
- $("ilonaBox").classList.toggle("active",x.p==="ILONA");
- $("q").textContent=x.q;
- $("feedback").textContent="";
- $("next").classList.add("hidden");
- const wrap=$("answers");wrap.innerHTML="";
- x.a.forEach((ans,i)=>{
-   const b=document.createElement("button"); b.className="btn answer"; b.textContent=(String.fromCharCode(65+i)+") "+ans);
-   b.disabled=state.answered || !me || me!==x.p;
-   b.onclick=()=>answer(i);
-   wrap.appendChild(b);
- });
+  if(!roomData) return;
+  document.getElementById("toniScore").textContent=roomData.toniScore||0;
+  document.getElementById("ilonaScore").textContent=roomData.ilonaScore||0;
+  const r=rounds[roomData.round||0];
+  if(!r){ endGame(); return; }
+
+  const turn=r.role;
+  const myTurn=role===turn;
+  const both=roomData.toni==="connected" && roomData.ilona==="connected";
+  document.getElementById("turnLabel").textContent=
+    !both ? "⏳ Esperando a "+(role==="TONI"?"ILONA 🇪🇸":"TONI 🇬🇧")+"..." :
+    myTurn ? "🔥 ¡Te toca a ti!" : "⏳ Turno de "+turn+"...";
+
+  document.getElementById("question").textContent= r.q;
+  const box=document.getElementById("answers"); box.innerHTML="";
+  r.a.forEach((ans,i)=>{
+    const b=document.createElement("button");
+    b.textContent=ans;
+    b.disabled=!both || !myTurn || roomData.answeredBy;
+    b.onclick=()=>answer(i);
+    box.appendChild(b);
+  });
+
+  const fb=document.getElementById("feedback");
+  if(roomData.answeredBy){
+    fb.innerHTML=roomData.correct
+      ? "<span class='ok'>✅ ¡Correcto!</span>"
+      : "<span class='bad'>❌ Casi. La correcta era: <b>"+escapeHtml(r.a[r.correct])+"</b></span>";
+    document.getElementById("nextBox").classList.toggle("hidden", !myTurn);
+  }else{
+    fb.textContent="";
+    document.getElementById("nextBox").classList.add("hidden");
+  }
 }
-function answer(i){
- const x=questions[state.idx%questions.length];
- if(state.answered || me!==x.p)return;
- state.answered=true;
- const good=i===x.c;
- if(good)state.score[me]++;
- $("feedback").textContent=good?"🎉 ¡Correcto! +1 punto":"💡 Casi. La respuesta correcta era: "+x.a[x.c];
- $("feedback").className="status "+(good?"ok":"warn");
- $("next").classList.remove("hidden");
- send({type:"state",state});
- render();
+
+async function answer(i){
+  const r=rounds[roomData.round];
+  if(role!==r.role || roomData.answeredBy) return;
+  const correct=i===r.correct;
+  const patch={answeredBy:role,answer:i,correct};
+  if(correct) patch[role==="TONI"?"toniScore":"ilonaScore"]=(roomData[role==="TONI"?"toniScore":"ilonaScore"]||0)+1;
+  await update(ref(db,"rooms/"+room),patch);
 }
-function nextQuestion(){
- state.idx++; state.answered=false; send({type:"state",state}); render();
+window.nextRound=async function(){
+  if(!roomData || role!==rounds[roomData.round].role || !roomData.answeredBy) return;
+  await update(ref(db,"rooms/"+room),{
+    round:(roomData.round||0)+1,answeredBy:null,answer:null,correct:null
+  });
+};
+function endGame(){
+  document.getElementById("question").textContent="🏆 ¡Fin del juego!";
+  document.getElementById("answers").innerHTML="";
+  document.getElementById("feedback").innerHTML=
+    "<b>TONI: "+(roomData.toniScore||0)+" puntos · ILONA: "+(roomData.ilonaScore||0)+" puntos</b>";
+  document.getElementById("nextBox").classList.add("hidden");
+  document.getElementById("turnLabel").textContent="🎉 ¡Partida terminada!";
 }
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+init();
 </script>
 </body>
 </html>
