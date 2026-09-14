@@ -1,0 +1,82 @@
+name: Construir APK TONI ILONA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Preparar Gradle 9.6.1
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '9.6.1'
+
+      - name: Comprobar ZIP
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          z = Path("TONI_ILONA_APLICACION_DEFINITIVA_V4.zip")
+
+          if not z.exists():
+              raise SystemExit("ERROR: No se encuentra el ZIP")
+
+          print("ZIP encontrado:", z)
+          print("Tamaño:", z.stat().st_size)
+
+          with zipfile.ZipFile(z) as f:
+              print("ZIP válido")
+              print("Número de archivos:", len(f.namelist()))
+          PY
+
+      - name: Extraer proyecto
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          z = Path("TONI_ILONA_APLICACION_DEFINITIVA_V4.zip")
+          destino = Path("proyecto")
+
+          with zipfile.ZipFile(z) as f:
+              f.extractall(destino)
+
+          print("Proyecto extraído correctamente")
+          PY
+
+      - name: Comprobar proyecto Android
+        run: |
+          find proyecto -name settings.gradle.kts -o -name build.gradle.kts
+
+      - name: Compilar APK
+        working-directory: proyecto/TONI_ILONA_DEFINITIVA_V2
+        run: gradle :app:assembleDebug --stacktrace --no-daemon
+
+      - name: Publicar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TONI-ILONA-APK
+          path: proyecto/TONI_ILONA_DEFINITIVA_V2/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
