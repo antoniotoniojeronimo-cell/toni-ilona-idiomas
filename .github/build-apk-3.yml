@@ -1,0 +1,50 @@
+name: Construir APK TONI ILONA V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Preparar Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Preparar Gradle 9.6.1
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '9.6.1'
+
+      - name: Comprobar versión de Gradle
+        run: gradle --version
+
+      - name: Descomprimir proyecto V4
+        run: unzip -o TONI_ILONA_APLICACION_DEFINITIVA_V4.zip
+
+      - name: Compilar APK
+        working-directory: TONI_ILONA_DEFINITIVA_V2
+        run: gradle :app:assembleDebug --stacktrace --no-daemon
+
+      - name: Publicar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TONI-ILONA-APK
+          path: TONI_ILONA_DEFINITIVA_V2/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
